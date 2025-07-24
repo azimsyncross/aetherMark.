@@ -1,35 +1,12 @@
-// It's a good practice to have icons as separate components
-
-// const MastercardIcon = () => (
-//   <svg
-//     width="56"
-//     height="36"
-//     viewBox="0 0 56 36"
-//     fill="none"
-//     xmlns="http://www.w3.org/2000/svg"
-//     aria-label="Mastercard"
-//     role="img"
-//   >
-//     <rect width="56" height="36" rx="4" fill="white" />
-//     <circle cx="23" cy="18" r="9" fill="#EB001B" />
-//     <circle
-//       cx="33"
-//       cy="18"
-//       r="9"
-//       fill="#F79E1B"
-//       style={{ mixBlendMode: "multiply" }}
-//     />
-//   </svg>
-// );
-
+import { Link } from "react-router-dom";
 const FooterBottom = () => {
   return (
-    <footer className="bg-[#0B0F19]">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+    <footer className="bg-[#0B0F19] border-t border-gray-800">
+      <div className="container mx-auto px-6 py-6">
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
           {/* Left Side: Payment Options */}
-          <div className="text-center md:text-left">
-            <h3 className="text-sm font-semibold text-cyan-300 mb-2">
+          <div className="text-center lg:text-left">
+            <h3 className="text-sm font-semibold text-cyan-300 mb-3">
               Payment Options
             </h3>
             <div className="flex items-center justify-center md:justify-start gap-2">
@@ -39,12 +16,44 @@ const FooterBottom = () => {
                 alt="Mastercard"
                 className="w-12 h-8"
               />
-              {/* <MastercardIcon /> */}
+            </div>
+          </div>
+
+          {/* Middle: Policy Links */}
+          <div className="text-center">
+            <div className="flex flex-wrap justify-center items-center gap-4 text-sm">
+              <Link
+                to="/terms"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Terms of Service
+              </Link>
+              <span className="text-gray-600">•</span>
+              <Link
+                to="/privacy"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Privacy Policy
+              </Link>
+              <span className="text-gray-600">•</span>
+              <Link
+                to="/refund"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Refund Policy
+              </Link>
+              {/* <span className="text-gray-600">•</span>
+              <Link
+                to="/cookies"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Cookie Policy
+              </Link> */}
             </div>
           </div>
 
           {/* Right Side: Copyright */}
-          <div className="text-center md:text-right">
+          <div className="text-center lg:text-right">
             <p className="text-sm text-gray-500">
               © 2025 AetherMark. All rights reserved.
             </p>

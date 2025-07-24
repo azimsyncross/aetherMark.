@@ -64,9 +64,9 @@ const Footer = () => {
                 { text: "Home", path: "/" },
                 { text: "About Us", path: "/about" },
                 { text: "Services", path: "/services" },
-                { text: "Terms of Service", path: "/terms" },
-                { text: "Privacy Policy", path: "/privacy" },
-                { text: "Refund Policy", path: "/refund" },
+                { text: "Contact", path: "/contact" },
+                // { text: "Blog", path: "/blog" },
+                // { text: "Career", path: "/career" },
               ].map((link, index) => (
                 <li key={index}>
                   <Link
