@@ -1,12 +1,15 @@
 import {
+  CheckCircle,
   ChevronDown,
   Clock,
+  Loader2,
   Mail,
   MapPin,
   Phone,
   Send,
   User,
 } from "lucide-react";
+import { useState } from "react";
 
 // FAQCard component for the FAQ section
 const FAQCard = ({ question, answer }) => (
@@ -17,7 +20,15 @@ const FAQCard = ({ question, answer }) => (
 );
 
 // InputField component for the form
-const InputField = ({ id, name, type = "text", placeholder, required }) => (
+const InputField = ({
+  id,
+  name,
+  type = "text",
+  placeholder,
+  required,
+  value,
+  onChange,
+}) => (
   <div>
     <label
       htmlFor={id}
@@ -32,13 +43,15 @@ const InputField = ({ id, name, type = "text", placeholder, required }) => (
       name={name}
       placeholder={placeholder}
       required={required}
+      value={value}
+      onChange={onChange}
       className="w-full px-4 py-3 bg-[#1e293b] border-2 border-transparent rounded-lg focus:outline-none focus:border-purple-500 transition-colors placeholder:text-gray-500"
     />
   </div>
 );
 
 // SelectField component for the form dropdowns
-const SelectField = ({ id, name, label, children }) => (
+const SelectField = ({ id, name, label, children, value, onChange }) => (
   <div>
     <label
       htmlFor={id}
@@ -50,6 +63,8 @@ const SelectField = ({ id, name, label, children }) => (
       <select
         id={id}
         name={name}
+        value={value}
+        onChange={onChange}
         className="w-full px-4 py-3 bg-[#1e293b] border-2 border-transparent rounded-lg focus:outline-none focus:border-purple-500 appearance-none transition-colors"
       >
         {children}
@@ -60,6 +75,18 @@ const SelectField = ({ id, name, label, children }) => (
 );
 
 const ContactPage = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    companyName: "",
+    phone: "",
+    service: "",
+    budget: "",
+    details: "",
+  });
+
   const faqs = [
     {
       question: "How quickly can we begin?",
@@ -111,6 +138,44 @@ const ContactPage = () => {
     },
   ];
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    // Basic validation
+    if (!formData.name || !formData.email || !formData.details) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Simulate API call with 4 second delay
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+
+    // Reset form after 3 seconds
+    setTimeout(() => {
+      setIsSubmitted(false);
+      setFormData({
+        name: "",
+        email: "",
+        companyName: "",
+        phone: "",
+        service: "",
+        budget: "",
+        details: "",
+      });
+    }, 3000);
+  };
+
   return (
     <div className="bg-[#0B0F19] text-white">
       <div className="container mx-auto px-4 py-20">
@@ -144,17 +209,36 @@ const ContactPage = () => {
           </div>
 
           {/* Right Column - Contact Form */}
-          <div className="bg-[#111827] p-8 rounded-2xl">
+          <div className="bg-[#111827] p-8 rounded-2xl relative">
             <h2 className="text-3xl font-bold text-white mb-8">
               Send Us a Message
             </h2>
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
+
+            {/* Success Message Overlay */}
+            {isSubmitted && (
+              <div className="absolute inset-0 bg-[#111827]/95 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10">
+                <div className="text-center">
+                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    Message Sent!
+                  </h3>
+                  <p className="text-gray-400">
+                    Thank you for contacting us. We'll get back to you within 24
+                    hours.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <InputField
                   id="full-name"
                   name="name"
                   placeholder="Full Name"
                   required
+                  value={formData.name}
+                  onChange={handleInputChange}
                 />
                 <InputField
                   id="email"
@@ -162,6 +246,8 @@ const ContactPage = () => {
                   type="email"
                   placeholder="Email Address"
                   required
+                  value={formData.email}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -169,12 +255,16 @@ const ContactPage = () => {
                   id="company-name"
                   name="companyName"
                   placeholder="Company Name"
+                  value={formData.companyName}
+                  onChange={handleInputChange}
                 />
                 <InputField
                   id="phone-number"
                   name="phone"
                   type="tel"
                   placeholder="Phone Number"
+                  value={formData.phone}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -182,17 +272,25 @@ const ContactPage = () => {
                   id="service"
                   name="service"
                   label="Service Interest"
+                  value={formData.service}
+                  onChange={handleInputChange}
                 >
-                  <option>Select a service</option>
-                  <option>Digital Marketing</option>
-                  <option>SEO</option>
-                  <option>Web Design</option>
+                  <option value="">Select a service</option>
+                  <option value="digital-marketing">Digital Marketing</option>
+                  <option value="seo">SEO</option>
+                  <option value="web-design">Web Design</option>
                 </SelectField>
-                <SelectField id="budget" name="budget" label="Budget Range">
-                  <option>Select budget range</option>
-                  <option>$1,000 - $5,000</option>
-                  <option>$5,000 - $10,000</option>
-                  <option>$10,000+</option>
+                <SelectField
+                  id="budget"
+                  name="budget"
+                  label="Budget Range"
+                  value={formData.budget}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select budget range</option>
+                  <option value="1000-5000">$1,000 - $5,000</option>
+                  <option value="5000-10000">$5,000 - $10,000</option>
+                  <option value="10000+">$10,000+</option>
                 </SelectField>
               </div>
 
@@ -209,17 +307,30 @@ const ContactPage = () => {
                   rows="4"
                   placeholder="Tell us about your business goals, current challenges, and what you're looking to achieve..."
                   required
+                  value={formData.details}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-[#1e293b] border-2 border-transparent rounded-lg focus:outline-none focus:border-purple-500 transition-colors placeholder:text-gray-500"
                 ></textarea>
               </div>
               <button
-                type="submit"
-                className="w-full group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-4 rounded-lg font-semibold shadow-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="w-full group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-4 rounded-lg font-semibold shadow-lg hover:opacity-90 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                <span>Send Message</span>
-                <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Send Message</span>
+                    <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </button>
-            </form>
+            </div>
           </div>
         </div>
 

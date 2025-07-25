@@ -1,19 +1,28 @@
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const location = useLocation();
 
   const navigationItems = [
     { title: "Home", path: "/" },
     { title: "Services", path: "/services" },
     { title: "About", path: "/about" },
+    { title: "Contact", path: "/contact" },
     { title: "Privacy & Policy", path: "/privacy" },
     { title: "Terms & Conditions", path: "/terms" },
   ];
+
+  // Function to check if a nav item is active
+  const isActiveNavItem = (path) => {
+    if (path === "/" && location.pathname === "/") return true;
+    if (path !== "/" && location.pathname.startsWith(path)) return true;
+    return false;
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,49 +57,63 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-4">
-            {navigationItems.map((item, index) => (
-              <div
-                key={index}
-                className="relative"
-                onMouseEnter={() => setActiveDropdown(item.title)}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
-                <Link
-                  to={item.path}
-                  className="px-4 py-2 text-gray-200 hover:text-white rounded-lg transition-colors relative flex items-center"
+            {navigationItems.map((item, index) => {
+              const isActive = isActiveNavItem(item.path);
+              return (
+                <div
+                  key={index}
+                  className="relative"
+                  onMouseEnter={() => setActiveDropdown(item.title)}
+                  onMouseLeave={() => setActiveDropdown(null)}
                 >
-                  <span>{item.title}</span>
-                  {item.dropdown && (
-                    <ChevronDown
-                      size={16}
-                      className={`transition-transform duration-200 ${
-                        activeDropdown === item.title ? "rotate-180" : ""
+                  <Link
+                    to={item.path}
+                    className={`px-4 py-2 rounded-lg transition-all duration-200 relative flex items-center group ${
+                      isActive
+                        ? "text-white bg-gradient-to-r from-teal-500/20 to-blue-600/20 border border-teal-500/30"
+                        : "text-gray-200 hover:text-white hover:bg-gray-700/50"
+                    }`}
+                  >
+                    <span>{item.title}</span>
+                    {item.dropdown && (
+                      <ChevronDown
+                        size={16}
+                        className={`ml-1 transition-transform duration-200 ${
+                          activeDropdown === item.title ? "rotate-180" : ""
+                        }`}
+                      />
+                    )}
+                    {/* Active indicator line */}
+                    {/* <span
+                      className={`absolute inset-x-0 -bottom-1 h-0.5 bg-teal-400 transition-transform origin-left ${
+                        isActive
+                          ? "scale-x-100"
+                          : "scale-x-0 group-hover:scale-x-100"
                       }`}
-                    />
-                  )}
-                  <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-teal-400 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-                </Link>
+                    ></span> */}
+                  </Link>
 
-                {/* Dropdown Menu */}
-                {item.dropdown && activeDropdown === item.title && (
-                  <div className="absolute top-full left-0 mt-2 w-48 rounded-lg bg-gray-900 shadow-lg">
-                    {item.dropdown.map((dropdownItem, idx) => (
-                      <Link
-                        key={idx}
-                        to={dropdownItem.path}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
-                      >
-                        {dropdownItem.title}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+                  {/* Dropdown Menu */}
+                  {item.dropdown && activeDropdown === item.title && (
+                    <div className="absolute top-full left-0 mt-2 w-48 rounded-lg bg-gray-900 shadow-lg border border-gray-700">
+                      {item.dropdown.map((dropdownItem, idx) => (
+                        <Link
+                          key={idx}
+                          to={dropdownItem.path}
+                          className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors first:rounded-t-lg last:rounded-b-lg"
+                        >
+                          {dropdownItem.title}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
             {/* CTA Button */}
             <Link
               to="/contact"
-              className="ml-4 px-6 py-2.5 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+              className="ml-4 px-6 py-2.5 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-lg font-medium hover:opacity-90 hover:shadow-lg hover:shadow-teal-500/25 transition-all duration-200"
             >
               Get Started
             </Link>
@@ -107,40 +130,52 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         <div
-          className={`lg:hidden fixed inset-0 top-16 bg-gray-900 backdrop-blur-lg transition-transform duration-300 ${
+          className={`lg:hidden fixed inset-0 top-16 bg-gray-900/95 backdrop-blur-lg transition-transform duration-300 ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           <nav className="container mx-auto px-4 py-6">
-            {navigationItems.map((item, index) => (
-              <div key={index} className="mb-4">
-                <Link
-                  to={item.path}
-                  onClick={() => setIsOpen(false)}
-                  className="block px-4 py-2 text-lg text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
-                >
-                  {item.title}
-                </Link>
-                {item.dropdown && (
-                  <div className="ml-4 mt-2 space-y-2">
-                    {item.dropdown.map((dropdownItem, idx) => (
-                      <Link
-                        key={idx}
-                        to={dropdownItem.path}
-                        onClick={() => setIsOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
-                      >
-                        {dropdownItem.title}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+            {navigationItems.map((item, index) => {
+              const isActive = isActiveNavItem(item.path);
+              return (
+                <div key={index} className="mb-4">
+                  <Link
+                    to={item.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-4 py-3 text-lg rounded-lg transition-all duration-200 relative ${
+                      isActive
+                        ? "text-white bg-gradient-to-r from-teal-500/20 to-blue-600/20 border-l-4 border-teal-400"
+                        : "text-gray-300 hover:text-white hover:bg-gray-800"
+                    }`}
+                  >
+                    <span className="flex items-center justify-between">
+                      {item.title}
+                      {isActive && (
+                        <div className="w-2 h-2 rounded-full bg-teal-400"></div>
+                      )}
+                    </span>
+                  </Link>
+                  {item.dropdown && (
+                    <div className="ml-4 mt-2 space-y-2">
+                      {item.dropdown.map((dropdownItem, idx) => (
+                        <Link
+                          key={idx}
+                          to={dropdownItem.path}
+                          onClick={() => setIsOpen(false)}
+                          className="block px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                        >
+                          {dropdownItem.title}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
             <Link
               to="/get-started"
               onClick={() => setIsOpen(false)}
-              className="block px-4 py-3 mt-6 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-lg font-medium text-center hover:opacity-90 transition-opacity"
+              className="block px-4 py-3 mt-6 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-lg font-medium text-center hover:opacity-90 hover:shadow-lg hover:shadow-teal-500/25 transition-all duration-200"
             >
               Get Started
             </Link>

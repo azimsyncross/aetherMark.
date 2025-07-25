@@ -1,9 +1,55 @@
-import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
+import {
+  ArrowUpRight,
+  CheckCircle,
+  Loader2,
+  Mail,
+  MapPin,
+  Phone,
+} from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import FooterBottom from "./FooterBottom";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (!email.trim()) {
+      alert("Please enter your email address");
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address");
+      return;
+    }
+
+    setIsSubscribing(true);
+
+    // Simulate API call with 4 second delay
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+
+    setIsSubscribing(false);
+    setIsSubscribed(true);
+
+    // Reset after 3 seconds
+    setTimeout(() => {
+      setIsSubscribed(false);
+      setEmail("");
+    }, 3000);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSubscribe();
+    }
+  };
+
   return (
     <footer className="relative bg-gradient-to-b from-gray-900 to-black text-gray-200 pt-20 pb-10 overflow-hidden">
       {/* Background Design Elements */}
@@ -27,15 +73,40 @@ const Footer = () => {
             </span>
           </Link>
 
-          <div className="w-full lg:w-auto">
+          <div className="w-full lg:w-auto relative">
+            {/* Success Message Overlay */}
+            {isSubscribed && (
+              <div className="absolute inset-0 bg-green-500/20 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10">
+                <div className="flex items-center space-x-2 text-green-400">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="font-medium">Successfully subscribed!</span>
+                </div>
+              </div>
+            )}
+
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-2 flex">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 bg-transparent px-4 py-2 text-white placeholder-gray-400 focus:outline-none"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isSubscribing}
+                className="flex-1 bg-transparent px-4 py-2 text-white placeholder-gray-400 focus:outline-none disabled:opacity-50"
               />
-              <button className="px-6 py-2 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-xl hover:opacity-90 transition-opacity">
-                Subscribe
+              <button
+                onClick={handleSubscribe}
+                disabled={isSubscribing}
+                className="px-6 py-2 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-xl hover:opacity-90 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center space-x-2"
+              >
+                {isSubscribing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Subscribing...</span>
+                  </>
+                ) : (
+                  <span>Subscribe</span>
+                )}
               </button>
             </div>
           </div>
