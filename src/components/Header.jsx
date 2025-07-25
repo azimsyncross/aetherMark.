@@ -46,13 +46,18 @@ const Header = () => {
             className="flex items-center space-x-2 group"
             onClick={() => setIsOpen(false)}
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center">
+            <img
+              src="/logo-1.png"
+              alt="AetherMark Logo"
+              className="h-10 w-auto"
+            />
+            {/* <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center">
               <span className="text-white font-bold text-2xl">A</span>
             </div>
             <span className="text-white text-2xl font-bold group-hover:text-teal-400 transition-colors">
               AetherMark
               <span className="text-teal-400">.</span>
-            </span>
+            </span> */}
           </Link>
 
           {/* Desktop Navigation */}

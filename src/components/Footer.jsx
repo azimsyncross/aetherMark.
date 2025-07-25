@@ -65,12 +65,18 @@ const Footer = () => {
             to="/"
             className="flex items-center space-x-3 group mb-6 lg:mb-0"
           >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold text-xl">B</span>
+            <img
+              src="/logo-1.png"
+              alt="AetherMark Logo"
+              className="h-16 w-auto"
+            />
+
+            {/* <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center">
+              <span className="text-white font-bold text-xl">A</span>
             </div>
             <span className="text-3xl font-bold text-white group-hover:text-teal-400 transition-colors">
               AetherMark<span className="text-teal-400">.</span>
-            </span>
+            </span> */}
           </Link>
 
           <div className="w-full lg:w-auto relative">
